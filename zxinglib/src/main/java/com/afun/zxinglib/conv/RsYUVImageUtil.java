@@ -36,13 +36,8 @@ public class RsYUVImageUtil implements ImageUtil {
     public Bitmap onPreviewFrame(byte[] data, Camera camera) {
         int prevSizeW;
         int prevSizeH;
-        if (DisplayUtils.getScreenOrientation(ctx) == Configuration.ORIENTATION_PORTRAIT) {
-            prevSizeW = camera.getParameters().getPreviewSize().height;
-            prevSizeH = camera.getParameters().getPreviewSize().width;
-        } else {
             prevSizeH = camera.getParameters().getPreviewSize().height;
             prevSizeW = camera.getParameters().getPreviewSize().width;
-        }
 
         if (yuvType == null) {
             yuvType = new Type.Builder(rs, Element.U8(rs)).setX(data.length);

@@ -257,12 +257,12 @@ public class ZXingScannerViewNew extends FrameLayout implements Camera.PreviewCa
     public ZXingScannerViewNew setOnResultCapture(OnResultCapture onResultCapture) {
         this.onResultCapture = onResultCapture;
 
-        yuvImageUtil = new RsYUVImageUtil(getContext());
+        yuvImageUtil = new YUVImageUtil(getContext());
         return this;
     }
 
     ImageUtil yuvImageUtil;
-
+    byte[] processedData = new byte[]{};
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         if (onlyOnce) {
@@ -273,6 +273,7 @@ public class ZXingScannerViewNew extends FrameLayout implements Camera.PreviewCa
         Camera.Size size = parameters.getPreviewSize();
         int width = size.width;
         int height = size.height;
+
         if (DisplayUtils.getScreenOrientation(getContext()) == Configuration.ORIENTATION_PORTRAIT) {
             if (rotatedData == null) {
                 rotatedData = new byte[data.length];
@@ -284,10 +285,10 @@ public class ZXingScannerViewNew extends FrameLayout implements Camera.PreviewCa
             int tmp = width;
             width = height;
             height = tmp;
-            data = rotatedData;
+            processedData = rotatedData;
         }
         Result rawResult = null;
-        PlanarYUVLuminanceSource source = buildLuminanceSource(data, width, height);
+        PlanarYUVLuminanceSource source = buildLuminanceSource(processedData, width, height);
         if (source != null) {
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
             try {

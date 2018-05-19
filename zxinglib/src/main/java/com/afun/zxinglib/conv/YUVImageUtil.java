@@ -30,13 +30,8 @@ public class YUVImageUtil implements ImageUtil {
     public Bitmap onPreviewFrame(byte[] data, Camera camera) {
         int prevSizeW;
         int prevSizeH;
-        if (DisplayUtils.getScreenOrientation(ctx) == Configuration.ORIENTATION_PORTRAIT) {
-            prevSizeW = camera.getParameters().getPreviewSize().height;
-            prevSizeH = camera.getParameters().getPreviewSize().width;
-        } else {
-            prevSizeH = camera.getParameters().getPreviewSize().height;
-            prevSizeW = camera.getParameters().getPreviewSize().width;
-        }
+        prevSizeH = camera.getParameters().getPreviewSize().height;
+        prevSizeW = camera.getParameters().getPreviewSize().width;
 
         YuvImage yuvimage = new YuvImage(
                 data,
