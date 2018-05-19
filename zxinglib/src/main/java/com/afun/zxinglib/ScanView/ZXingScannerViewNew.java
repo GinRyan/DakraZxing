@@ -257,12 +257,13 @@ public class ZXingScannerViewNew extends FrameLayout implements Camera.PreviewCa
     public ZXingScannerViewNew setOnResultCapture(OnResultCapture onResultCapture) {
         this.onResultCapture = onResultCapture;
 
-        yuvImageUtil = new YUVImageUtil(getContext());
+        yuvImageUtil = new RsYUVImageUtil(getContext());
         return this;
     }
 
     ImageUtil yuvImageUtil;
     byte[] processedData = new byte[]{};
+
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         if (onlyOnce) {

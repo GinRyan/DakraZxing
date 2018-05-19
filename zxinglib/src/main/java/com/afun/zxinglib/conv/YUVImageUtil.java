@@ -5,20 +5,19 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicYuvToRGB;
-import android.renderscript.Type;
 
 import com.afun.zxinglib.DisplayUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.SoftReference;
 
+/**
+ * API 17以下使用这个类
+ */
 public class YUVImageUtil implements ImageUtil {
     private Context ctx;
 
@@ -47,9 +46,18 @@ public class YUVImageUtil implements ImageUtil {
         BitmapFactory.Options options = new BitmapFactory.Options();
         //options.inPreferredConfig = Bitmap.Config.RGB_565;   //默认8888
         //options.inSampleSize = 8;
+
+
         SoftReference<Bitmap> softRef = new SoftReference<Bitmap>(BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length, options));//方便回收
         Bitmap bitmap = softRef.get();
-        return bitmap;
+
+        Matrix matrix = new Matrix();
+        if (DisplayUtils.getScreenOrientation(ctx) == Configuration.ORIENTATION_PORTRAIT) {
+            matrix.setRotate(90);
+        }
+
+        Bitmap bitmap2 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        return bitmap2;
 
     }
 }

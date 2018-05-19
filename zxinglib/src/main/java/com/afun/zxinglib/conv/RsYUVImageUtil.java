@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
@@ -19,6 +20,9 @@ import com.afun.zxinglib.DisplayUtils;
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.SoftReference;
 
+/**
+ * API 17以上使用这个类，可以加速生成Bitmap
+ */
 public class RsYUVImageUtil implements ImageUtil {
     private RenderScript rs;
     private ScriptIntrinsicYuvToRGB yuvToRgbIntrinsic;
@@ -36,8 +40,8 @@ public class RsYUVImageUtil implements ImageUtil {
     public Bitmap onPreviewFrame(byte[] data, Camera camera) {
         int prevSizeW;
         int prevSizeH;
-            prevSizeH = camera.getParameters().getPreviewSize().height;
-            prevSizeW = camera.getParameters().getPreviewSize().width;
+        prevSizeH = camera.getParameters().getPreviewSize().height;
+        prevSizeW = camera.getParameters().getPreviewSize().width;
 
         if (yuvType == null) {
             yuvType = new Type.Builder(rs, Element.U8(rs)).setX(data.length);
@@ -52,8 +56,16 @@ public class RsYUVImageUtil implements ImageUtil {
         yuvToRgbIntrinsic.setInput(in);
         yuvToRgbIntrinsic.forEach(out);
 
+        Matrix matrix = new Matrix();
+        if (DisplayUtils.getScreenOrientation(ctx) == Configuration.ORIENTATION_PORTRAIT) {
+            matrix.setRotate(90);
+        }
+
         Bitmap bmpout = Bitmap.createBitmap(prevSizeW, prevSizeH, Bitmap.Config.ARGB_8888);
         out.copyTo(bmpout);
-        return bmpout;
+
+        Bitmap bitmap2 = Bitmap.createBitmap(bmpout, 0, 0, bmpout.getWidth(), bmpout.getHeight(), matrix, false);
+        return bitmap2;
+
     }
 }
