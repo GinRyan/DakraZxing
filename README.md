@@ -1,6 +1,7 @@
-#DakraZxing QR reader
+DakraZxing QR reader
+================
 
-这是基于Zxing的一个简单的1D/2D条码扫描器。
+这是基于Zxing的一个简单的1D/2D条码扫描器，不过在我的需求上加上了识别成功后，输出识别位图，方便保存图片到本地。
 
 ### How to Use/Import
 
