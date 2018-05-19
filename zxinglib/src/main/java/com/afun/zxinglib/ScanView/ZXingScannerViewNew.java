@@ -2,6 +2,7 @@ package com.afun.zxinglib.ScanView;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.util.AttributeSet;
@@ -13,6 +14,9 @@ import com.afun.zxinglib.CameraPreview;
 import com.afun.zxinglib.CameraUtils;
 import com.afun.zxinglib.DisplayUtils;
 import com.afun.zxinglib.R;
+import com.afun.zxinglib.conv.ImageUtil;
+import com.afun.zxinglib.conv.RsYUVImageUtil;
+import com.afun.zxinglib.conv.YUVImageUtil;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
@@ -104,8 +108,8 @@ public class ZXingScannerViewNew extends FrameLayout implements Camera.PreviewCa
         }
         Rect rect = qrSize.getDetectRect();
 
-        int width=showPanel.getWidth();
-        int height=showPanel.getHeight();
+        int width = showPanel.getWidth();
+        int height = showPanel.getHeight();
         if ((rect.right - rect.left) != 0 && (rect.top - rect.bottom) != 0) {
             rect.left = rect.left * previewWidth / width;
             rect.right = rect.right * previewWidth / width;
@@ -244,6 +248,21 @@ public class ZXingScannerViewNew extends FrameLayout implements Camera.PreviewCa
     private byte[] rotatedData;
     private boolean onlyOnce;
 
+    public interface OnResultCapture {
+        public void onCapture(Bitmap bitmap);
+    }
+
+    OnResultCapture onResultCapture = null;
+
+    public ZXingScannerViewNew setOnResultCapture(OnResultCapture onResultCapture) {
+        this.onResultCapture = onResultCapture;
+
+        yuvImageUtil = new RsYUVImageUtil(getContext());
+        return this;
+    }
+
+    ImageUtil yuvImageUtil;
+
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         if (onlyOnce) {
@@ -288,6 +307,10 @@ public class ZXingScannerViewNew extends FrameLayout implements Camera.PreviewCa
 //            stopCamera();
             if (mResultHandler != null) {
                 mResultHandler.handleResult(rawResult);
+                if (onResultCapture != null && yuvImageUtil != null) {
+                    Bitmap frameWithRet = yuvImageUtil.onPreviewFrame(data, camera);
+                    onResultCapture.onCapture(frameWithRet);
+                }
             }
         }
     }
