@@ -38,7 +38,7 @@
 
                 <ImageView
                     android:id="@+id/scanner_line"
-                    android:layout_width="200dp"
+                    android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:src="@mipmap/scanner"
                     android:visibility="gone" />
