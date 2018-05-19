@@ -29,6 +29,8 @@ implementation 'com.google.zxing:core:3.2.1'
 
 [https://github.com/zxing/zxing](https://github.com/zxing/zxing)
 
+参考文章: [https://blog.csdn.net/bluegodisplay/article/details/53431798](https://blog.csdn.net/bluegodisplay/article/details/53431798)
+
 
 
 ### LICENSE
